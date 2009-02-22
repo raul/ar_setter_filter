@@ -5,24 +5,25 @@ Plugin to add or chain filters to several ActiveRecord attributes setters at a t
 
 Usage
 -----
+If no attributes are specified, all of them will apply the given filters:
 
-    setter_filter [:first_filter, :second_filter] # filters applied to all attributes
+    setter_filter [:first_filter, :second_filter] # applied to all attributes
     
-or
+You can also specify some attributes
 
-    setter_filter [:first_filter, :second_filter], :only => [:first_name, :last_name]
-    setter_filter [:other, :different, :filters], :only => [:bio, :birthdate]
+    setter_filter [:first_filter, :second_filter], [:first_name, :last_name]
+    setter_filter [:other, :different, :filters], [:bio, :birthdate]
 
 You must not use the same attribute on different setter_filter calls:
 
-    setter_filter [:a, :b], :only => [:name, :website]
-    setter_filter [:c, :d, :e], :only => [:website, :bio, :birthdate] # website again?!? DON'T!
+    setter_filter [:a, :b], [:name, :website]
+    setter_filter [:c, :d, :e], [:website, :bio, :birthdate] # website again?!? DON'T!
 
 Instead you should extract the repeated attribute to its own setter_filter line:
 
-    setter_filter [:a, :b], :only => [:name]
-    setter_filter [:c, :d, :e], :only => [:bio, :birthdate]
-    setter_filter [:a, :b, :c, :d, :e], :only => [:website]
+    setter_filter [:a, :b], [:name]
+    setter_filter [:c, :d, :e], [:bio, :birthdate]
+    setter_filter [:a, :b, :c, :d, :e], [:website]
 
 A filter can be any instance method which follows this convention:
 
@@ -33,7 +34,10 @@ A filter can be any instance method which follows this convention:
       # The value returned by the last filter will be stored on the database.
     end
 
-Example:
+It's important to return a value which will be passed in turn to the next filter. The
+value returned by the last filter will be the actual value stored on the database.
+
+Let's see a simple example:
 
     setter_filter [:downcase, :remove_vowels], :only => [:example]
   
@@ -41,8 +45,8 @@ Example:
       new_value.downcase    # will return "foo"
     end
   
-    def remove_vowels(new_value) # will receive "foo"
-      new_value.gsub(/aeiou/,'') # will return "f", to be stored on the db
+    def remove_vowels(new_value)   # will receive "foo"
+      new_value.gsub(/[aeiou]/,'') # will return "f", to be stored on the db
     end
 
 Motivation
@@ -105,8 +109,8 @@ I could also create a new plugin to customize the behaviour and call it `sanitiz
 
 I've realized that what I really would like to write is something like:
 
-    setter_filter [:sanitize_html], :only => [:name, :client, :company]
-    setter_filter [:sanitize_html, :another_filter], :only => [client_url, :company_url]
+    setter_filter [:sanitize_html], [:name, :client, :company]
+    setter_filter [:sanitize_html, :another_filter], [client_url, :company_url]
 
 and be sure that the given filter/s will be applied in the same order as they are declared.
 
