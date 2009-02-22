@@ -115,3 +115,18 @@ I've realized that what I really would like to write is something like:
 and be sure that the given filter/s will be applied in the same order as they are declared.
 
 ...and that's why I wrote this plugin. But hey, if you know a better solution please contact me!
+
+Questions, suggestions, bug reports...
+--------------------------------------
+Feedback, questions and comments will be always welcome at raul@murciano.net
+
+Credits
+-------
+- Raul Murciano http://raul.murciano.net - code
+- Domestika INTERNET S.L http://domestika.org - incredible support, really nice people to work with!
+
+License
+-------
+    Copyright (c) 2009 Released under the MIT license (see MIT-LICENSE)
+    Raul Murciano <http://raul.murciano.net>  
+    Domestika INTERNET S.L. <http://domestika.org>
