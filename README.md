@@ -27,7 +27,7 @@ Instead you should extract the repeated attribute to its own setter_filter line:
 
 A filter can be any instance method which follows this convention:
 
-    def my_gorgeous_filter(new_value)
+    def my_gorgeous_filter(attrib_name, new_value)
       # do whatever you want
       # Just remember to return the desired new_value, 
       # as it will be the incoming value for the next filter.
@@ -41,11 +41,11 @@ Let's see a simple example:
 
     setter_filter [:downcase, :remove_vowels], :only => [:example]
   
-    def downcase(new_value) # if new_value = "FOO"
+    def downcase(attrib_name, new_value) # if new_value = "FOO"
       new_value.downcase    # will return "foo"
     end
   
-    def remove_vowels(new_value)   # will receive "foo"
+    def remove_vowels(attrib_name, new_value)   # will receive "foo"
       new_value.gsub(/[aeiou]/,'') # will return "f", to be stored on the db
     end
 

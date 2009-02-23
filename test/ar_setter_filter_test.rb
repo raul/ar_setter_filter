@@ -18,10 +18,10 @@ end
 # Available ActiveRecord filters
 module ActiveRecord
   class Base
-    def downcase(new_value)
+    def downcase(attrib_name, new_value)
       new_value.downcase
     end
-    def remove_down_vowels(new_value)
+    def remove_down_vowels(attrib_name, new_value)
       new_value.gsub(/[aeiou]/,'')
     end
   end
