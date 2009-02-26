@@ -5,7 +5,8 @@ Plugin to add or chain filters to several ActiveRecord attributes setters at a t
 
 Usage
 -----
-If no selectors are specified, all of them will apply the given filters:
+
+If no selectors are specified, all of the attributes will apply the given filter/s on their setters:
 
     setter_filter [:first_filter, :second_filter] # applied to all attributes
     
@@ -48,6 +49,9 @@ Let's see a simple example:
     def remove_vowels(attrib_name, new_value)  # will receive "foo"
       new_value.gsub(/[aeiou]/,'')             # will return "f", to be stored on the db
     end
+
+Please note that `setter_filter` never will be applied to non-content columns (eg: `id`, `xxx_id`, `xxx_count` or STI-involved attributes, see [content_columns](http://api.rubyonrails.org/classes/ActiveRecord/Base.html#M002242)).
+
 
 Motivation
 ----------
