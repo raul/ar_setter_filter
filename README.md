@@ -5,25 +5,25 @@ Plugin to add or chain filters to several ActiveRecord attributes setters at a t
 
 Usage
 -----
-If no attributes are specified, all of them will apply the given filters:
+If no selectors are specified, all of them will apply the given filters:
 
     setter_filter [:first_filter, :second_filter] # applied to all attributes
     
-You can also specify some attributes
+You can select some attributes with :only or :except
 
-    setter_filter [:first_filter, :second_filter], [:first_name, :last_name]
-    setter_filter [:other, :different, :filters], [:bio, :birthdate]
+    setter_filter [:first_filter, :second_filter], :only => [:first_name, :last_name]
+    setter_filter [:other, :different, :filters], :except => [:bio]
 
-You must not use the same attribute on different setter_filter calls:
+You can chain several filters to the same attribute/s with different setter_filter calls:
 
-    setter_filter [:a, :b], [:name, :website]
-    setter_filter [:c, :d, :e], [:website, :bio, :birthdate] # website again?!? DON'T!
+    setter_filter [:a, :b], :only => [:name, :website]
+    setter_filter [:c, :d, :e], :only => [:website, :bio, :birthdate] 
+    # website's setter will apply all filters following their declaration order: a,b,c,d,e
 
-Instead you should extract the repeated attribute to its own setter_filter line:
+You can also select the attributes by their column types:
 
-    setter_filter [:a, :b], [:name]
-    setter_filter [:c, :d, :e], [:bio, :birthdate]
-    setter_filter [:a, :b, :c, :d, :e], [:website]
+    setter_filter [:a, :b], :only_types => [:string, :text]
+    setter_filter [:c, :d, :e], :except_types => [:integer, :boolean, :datetime] 
 
 A filter can be any instance method which follows this convention:
 
@@ -34,19 +34,19 @@ A filter can be any instance method which follows this convention:
       # The value returned by the last filter will be stored on the database.
     end
 
-It's important to return a value which will be passed in turn to the next filter. The
-value returned by the last filter will be the actual value stored on the database.
+It's important to **return a value which will be passed in turn to the next filter**. 
+The value returned by the last filter will be the actual value stored on the database.
 
 Let's see a simple example:
 
     setter_filter [:downcase, :remove_vowels], :only => [:example]
   
-    def downcase(attrib_name, new_value) # if new_value = "FOO"
-      new_value.downcase    # will return "foo"
+    def downcase(attrib_name, new_value)   # if new_value = "FOO"
+      new_value.downcase                   # will return "foo"
     end
   
-    def remove_vowels(attrib_name, new_value)   # will receive "foo"
-      new_value.gsub(/[aeiou]/,'') # will return "f", to be stored on the db
+    def remove_vowels(attrib_name, new_value)  # will receive "foo"
+      new_value.gsub(/[aeiou]/,'')             # will return "f", to be stored on the db
     end
 
 Motivation
@@ -109,13 +109,13 @@ I could also create a new plugin to customize the behaviour and call it `sanitiz
 
 I've realized that what I really would like to write is something like:
 
-    setter_filter [:sanitize_html], [:name, :client, :company]
-    setter_filter [:sanitize_html, :another_filter], [client_url, :company_url]
+    setter_filter [:sanitize_html]
+    setter_filter [:another_filter], [client_url, :company_url]
 
 and be sure that the given filter/s will be applied in the same order as they are declared.
 
-...and that's why I wrote this plugin. But hey, I don't want to reinvent the wheel: 
-if you know a better solution please contact me!
+...so that's why I wrote this plugin. 
+But hey, I don't want to reinvent the wheel: if you know a better solution please contact me!
 
 Questions, suggestions, bug reports...
 --------------------------------------
