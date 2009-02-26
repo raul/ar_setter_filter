@@ -110,7 +110,7 @@ I could also create a new plugin to customize the behaviour and call it `sanitiz
 I've realized that what I really would like to write is something like:
 
     setter_filter [:sanitize_html]
-    setter_filter [:another_filter], [client_url, :company_url]
+    setter_filter [:another_filter], :only => [client_url, :company_url]
 
 and be sure that the given filter/s will be applied in the same order as they are declared.
 
